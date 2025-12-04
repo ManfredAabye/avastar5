@@ -15,11 +15,40 @@ Avastar ist ein leistungsfähiges Blender-Addon, das den Workflow für Charakter
 - Unterstützung für Devkits und Shape-Synchronisation
 - Optimierter Export für .dae (Collada)
 
+### Erweiterte Features 🔧
+
+#### Rigging & Weights
+
+- ✅ **Automatische Weight-Generierung** – ButtonGenerateWeights mit Island-basierter Berechnung
+- ✅ **Collision Volume Tools** – Umfassende Werkzeuge für Fitted Mesh Bones
+- ✅ **Mesh Deformer Support** – Experimentelle Unterstützung für Custom Mesh Deformer
+
+#### Animation & Retargeting
+
+- ✅ **Retargeting System** – Vollständiges Animation-Retargeting zwischen verschiedenen Rigs
+- ✅ **BVH/Anim Export** – Multi-Format-Export mit Bento-Kompatibilität
+
+#### Presets & Workflow
+
+- ✅ **Umfangreiche Preset-Bibliothek**:
+  - 7 Shape-Presets (default, big, gnome, makehuman, medium, model, etc.)
+  - 3 Rig-Presets (Basic, Complete, Skeleton)
+  - 3 Transfer-Presets (Belleza, ManuelLab, TMP)
+  - Armature-, Binding-, Fitting-, Targetmap-Presets
+- ✅ **Devkit-Integration** – Vorgefertigte Mesh-Templates (avamesh-female)
+
+#### Performance & Upload
+
+- ✅ **LOD-Berechnungen** – Automatische Berechnung optimaler Level-of-Detail Parameter
+- ✅ **Upload-Optimierung** – Approximation von Vertex-/Triangle-Counts für SL-Upload
+
 ---
 
 ## 🚀 Wichtige Änderungen in diesem Fork
 
-- ✅ **Kompatibel mit Blender 5.0+** 
+### API-Modernisierung
+
+- ✅ **Kompatibel mit Blender 5.0+**
   - `imp` Modul durch `importlib` ersetzt
   - `bpy.utils.user_resource()` durch kompatible API ersetzt
   - Veraltete `bgl` Imports entfernt
@@ -28,6 +57,14 @@ Avastar ist ein leistungsfähiges Blender-Addon, das den Workflow für Charakter
 - ✅ Verbesserte `register()`-Methode & API-Anpassungen
 - ✅ Ordnerstruktur und Modulnamen aktualisiert
 - 🧼 Code-Bereinigung und Modernisierung
+
+### Erweiterte Features & Optimierungen
+
+- ✅ **Machinimatrix-Aufrufe entfernt** – Keine externen Benachrichtigungen oder Update-Checks
+- ✅ **Erweiterte UI/UX** – Modernere Benutzeroberfläche mit besseren Tooltips
+- ✅ **Bakes on Mesh (BoM) Tools** – Spezielle Tools für System Layers
+- ✅ **Animesh Support** – Optimierungen für animierte Objekte
+- ✅ **Verbesserte Performance** – Optimierte Algorithmen für große Meshes
 
 ---
 
@@ -46,7 +83,7 @@ Avastar ist ein leistungsfähiges Blender-Addon, das den Workflow für Charakter
 
 Diese Software steht unter der **GNU General Public License v2 oder später**.
 
-```
+```text
 Copyright (c) 2011–2015
   Magus Freston, Domino Marama, Gaia Clary (Machinimatrix)
 Modifikationen (c) 2025
@@ -67,7 +104,7 @@ Gerne über [Issues](https://github.com/ManfredAabye/avastar/issues) oder per Fo
 ## 💡 Hinweis
 
 Dies ist keine offizielle Version von Avastar. Wenn du professionelle Unterstützung oder Lizenzen für die kommerzielle Nutzung benötigst, besuche bitte das Originalprojekt auf:  
-🔗 https://machinimatrix.org
+🔗 [machinimatrix.org](https://machinimatrix.org)
 
 
 ### 🧬 Herkunft des Codes

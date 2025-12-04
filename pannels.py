@@ -2688,61 +2688,7 @@ class PanelAvastarUpdate(bpy.types.Panel):
             row.label(text=info['name']    )
             row.label(text=str(info['version']) )
 
-        can_report   = True
-        is_logged_in = True
-        if addonProps.update_status=='CANUPDATE':
-            opn   = 'avastar.check_for_updates'
-            label = 'Login to Get %s' % addonProps.version
-            can_report   = False
-            is_logged_in = False
-        elif addonProps.update_status=='UPDATE':
-            opn   = 'avastar.download_update'
-            label = 'Download Avastar-%s' % addonProps.version
-        elif addonProps.update_status=='ONLINE':
-            opn   = 'avastar.check_for_updates'
-            label = 'Redo Check for updates'
-        elif addonProps.update_status=='READY_TO_INSTALL':
-            opn   = 'avastar.download_install'
-            label = 'Install Avastar-%s' % addonProps.version
-        elif addonProps.update_status=='ACTIVATE':
-            opn   = 'avastar.download_reload'
-            label = 'Reload Addon to Activate'
-        else:
-            opn   = 'avastar.check_for_updates'
-            label = 'Check for updates' if addonProps.username == '' or addonProps.password == '' else 'Login at Machinimatrix'
-            can_report   = False
-            is_logged_in = False
-        
-
-        if can_report:
-            box   = layout.box()
-            box.label(text="Support Request")
-
-            col = box.column(align=True)
-            col.prop(addonProps, "ticketTypeSelection")
-            col = box.column(align=True)
-            col.prop(addonProps, "productName" )
-
-            col = box.column(align=True)
-            col.prop(addonProps, "addonVersion")
-            col.prop(addonProps, "blenderVersion")
-            col.prop(addonProps, "operatingSystem")
-            col.enabled = False
-            col = box.column(align=True)
-            col.operator('avastar.send_report', text="Create Report", icon=ICON_RADIOBUT_ON)
-        
-
-
-        
-        box   = layout.box()
-        box.label(text="My account")
-        col = box.column(align=True)
-        row = col.row(align=True)
-        
-        wlabel = "Welcome, %s" % addonProps.user.replace("+"," ") if addonProps.user != '' else "My Machinimatrix Account"
-        
-        row.operator("wm.url_open", text=wlabel, icon=ICON_NONE, emboss=False).url=AVASTAR_DOWNLOAD
-        row.operator("wm.url_open", text="",icon=ICON_INFO,emboss=False).url=AVASTAR_DOWNLOAD
+        # Removed: Machinimatrix Update Check and Report UI
         
         col = box.column(align=True)
         col.prop(addonProps,"username",  text= "Logged in as" if is_logged_in else "User", emboss = not is_logged_in)

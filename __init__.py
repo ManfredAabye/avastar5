@@ -89,6 +89,12 @@ if "bpy" in locals():
         importlib.reload(weights)
     if "www" in locals():
         importlib.reload(www)
+    if "bom" in locals():
+        importlib.reload(bom)
+    if "animesh" in locals():
+        importlib.reload(animesh)
+    if "performance" in locals():
+        importlib.reload(performance)
 else:
     import bpy
     from . import propgroups
@@ -116,6 +122,9 @@ else:
     from . import math
     from . import weights
     from . import www
+    from . import bom
+    from . import animesh
+    from . import performance
 
 
 import os, sys, glob, string, gettext, re
@@ -134,13 +143,6 @@ import logging, importlib
 from .pannels import PanelAvastarTool
 from .data   import Skeleton
 from .const  import *
-
-try:
-    import xml
-    import xmlrpc.client
-except:
-    print("xmlrpc: i can not configure the remote call to machinimatrix.")
-    print("Sorry, we can not provide this feature on your computer")
 
 BLENDER_VERSION = 10000 * bpy.app.version[0] + 100 * bpy.app.version[1] +  bpy.app.version[2]
 
@@ -373,47 +375,13 @@ class Avastar(AddonPreferences):
     _username = config.get("credentials","user", fallback="")
     _password = config.get("credentials","pwd",  fallback="")
 
-    username       : StringProperty(
-        name       = 'User',
-        description="Your Username on the Machinimatrix Website\n\nImportant: This is not your Secondlife User!\nWe recommend that your Machinimatrix account name\nis different from your Avatar name in Secondlife!",
-        default    =_username)
+    # Removed: Machinimatrix login credentials
 
-    password       : StringProperty(
-        name       = 'Pwd',
-        subtype='PASSWORD',
-        description="Your Password on the Machinimatrix Website\n\nImportant: This is not your Secondlife Password!\nWe recommend that your Machinimatrix account password\nis different from your Password in Secondlife!\nAlso note that the Machinimatrix team will never(!) ask you for any password!",
-        default    =_password)
-        
-    keep_cred       : BoolProperty(
-        name        = "Keep Credentials",
-        description = "Keep login Credentials on local file for reuse on next start of Blender",
-        default     = _username != '')
+    # Removed: Machinimatrix password storage
 
-    server       : StringProperty(
-        description="Server")
-    page       : StringProperty(
-        description="Page")
+    # Removed: Machinimatrix server connection properties
 
-    user       : StringProperty(
-        description="User")
-    purchase       :  StringProperty(
-        description="Your Account name on the Machininmatrix website")
-    version       :  StringProperty(
-        description="Version")
-
-    update_status  : EnumProperty(
-        items=(
-            ('BROKEN', 'Broken', 'We could not setup the Remote caller on your system.\nPlease visit the Machinimatrix website and\ncheck manually for new updates.'),
-            ('UNKNOWN', 'Unknown', 'You need to Login at Machinimatrix\nor at least Check for Updates to see your update status'),
-            ('UPTODATE', 'Up to date', 'You seem to have already installed the newest product version'),
-            ('ONLINE', 'Up to date', 'You have already installed the newest product version'),
-            ('CANUPDATE', 'Can Update', 'A newer product version is available (Please login to get the download)'),
-            ('UPDATE', 'Update available', 'A newer product version is available for Download'),
-            ('ACTIVATE', 'Restart to Activate', 'A new update has been installed, Press F8 or restart Blender to activate'),
-            ('READY_TO_INSTALL', 'Update Ready to Install', 'A new update has been downloaded and can now be installed')),
-        name="Update Status",
-        description="Update Status of your Product",
-        default='UNKNOWN')
+    # Removed: Machinimatrix update status
 
     ui_complexity  : EnumProperty(
         items=(
@@ -461,8 +429,7 @@ class Avastar(AddonPreferences):
     verbose  : BoolProperty(default=True, name="Display additional Help",
         description="Enable display of help links in Panel headers")
 
-    rig_version_check  : BoolProperty(default=True, name="Rig Update Dialog",
-        description="Avastar should always be used with the newest rig.\nBy default Avastar checks if all rigs in a Blend file are up to date.\nDisable this option to permanently suppress this check.\nNote: We recommend you keep this option enabled!")
+    # Removed: rig_version_check (no longer needed without Machinimatrix updates)
 
     rig_edit_check  : BoolProperty(default=True, name="System Mesh Check",
         description=Avastar_rig_edit_check_description)
@@ -715,7 +682,7 @@ class Avastar(AddonPreferences):
             col.prop(self, "verbose")
             col.prop(self, "default_attach")
             col.prop(self, "enable_unsupported")
-            col.prop(self, "rig_version_check")
+            # Removed: rig_version_check
             col.prop(self, "use_safe_names")
             col.prop(self, "rig_edit_check")
             col.prop(self, "enable_auto_rig_update")
@@ -834,16 +801,8 @@ class Avastar(AddonPreferences):
                 prop.name = "%s" % (kitprop.devkit_snail)
 
         def draw_credentials_section(box):
-            irow = box.row(align=False)
-            irow.alignment='RIGHT'
-            irow.operator("wm.url_open", text="My Machinimatrix Account",icon=ICON_BLANK1,emboss=False).url=AVASTAR_DOWNLOAD
-            irow.operator("wm.url_open", text='',icon=ICON_INFO).url=AVASTAR_DOWNLOAD
-
-            col = box.column(align=True)
-
-            col.prop(self,"username", text="user")
-            col.prop(self,"password", text="password")
-            col.label(text="")
+            # Removed: Machinimatrix Account Login UI
+            pass
 
         def draw_panel_visibility_section(box):
             col = box.column()
@@ -956,14 +915,7 @@ class Avastar(AddonPreferences):
 
 
 
-        section_box, help_box = create_section_layout(
-            layout,
-            draw_credentials_section,
-            box_label="User Credentials",
-            help_label="Credentials information",
-            help_icon='INFO')
-
-        util.ErrorDialog.draw_generic(help_box, messages.panel_info_credentials, SEVERITY_HINT, generate_docu_link=False)
+        # Removed: Machinimatrix Credentials Section
 
 
 
@@ -1132,202 +1084,10 @@ class DownloadReset(bpy.types.Operator):
         props.update_status='UNKNOWN'
         return {'FINISHED'}
 
-class DownloadUpdate(bpy.types.Operator):
-    bl_idname = "avastar.download_update"
-    bl_label  = "Download Update"
-    bl_description = "Download Avastar Update from Machinimatrix (Freezes Blender for ~1 minute, depending on your internet)"
-
-    reset : BoolProperty(default=False, name="Reset",
-        description="Reset to not logged in")
-
-    filename_pattern  = re.compile('.*filename.*=\\s*([^;]*);?.*', re.IGNORECASE)
-    extension_pattern = re.compile('.*\\.(zip|py)', re.IGNORECASE)
-
-    def download(self, props):
-        url = "https://"+props.server+props.page
-        log.debug("Getting data from server [%s] on page [%s]..." % (props.server,props.page))
-        log.debug("Calling URL [%s]" %  url)
-        response, extension, filename, code = www.call_url(self, url)
-
-        if response is None:
-            log.error("Error while downloading: No valid Response from Server (code %s)" % code )
-            return None
-        elif filename is None or extension is None:
-            log.warning("Got a response but something went wrong with the filename (code %s)" % code )
-        else:
-            log.debug("Got the download for file [%s] with extension [%s]" % (filename, extension) )
-
-        path = None
-        try:
-
-            destination_folder = bpy.app.tempdir
-            print("Write to [%s]" % destination_folder)
-
-
-            path= os.path.join(destination_folder, filename)
-            basedir = os.path.dirname(path)
-            if not os.path.exists(basedir):
-                os.makedirs(basedir)
-            f = open(path, "wb")
-            b = bytearray(10000)
-            util.progress_begin(0,10000)
-            while response.readinto(b) > 0:
-                f.write(b)
-                util.progress_update(1, absolute=False)
-            util.progress_end()
-
-            f.close()
-        except:
-            print("Can not store download to:", path)
-            print("system info:", sys.exc_info())
-            self.report({'ERROR'},("Download to File was interrupted."))
-            path = None
-        return path
-
-    def execute(self, context):
-        props = util.getAddonPreferences()
-        if props.update_status != 'UPDATE':
-            return {'CANCELLED'}
-
-        path = self.download(props)
-        if path:
-            props.update_path = path
-            props.update_status = 'READY_TO_INSTALL'
-            return {'FINISHED'}
-        return {'CANCELLED'}
-
-product_id_map = {
-    "Avastar": 759,
-    "Primstar": 760,
-    "Sparkles": 763
-}
-        
-class CreateReport(bpy.types.Operator):
-    bl_idname = "avastar.send_report"
-    bl_label  = "Create Report"
-    bl_description = "Create a Report and send the data to the Machinimatrix website"
-
-    def execute(self, context):
-        import webbrowser
-        addonProps = util.getAddonPreferences()
-        user             = addonProps.username
-        pwd              = addonProps.password
-
-        product_name     = product_id_map[addonProps.productName]
-        addon_version    = addonProps.addonVersion
-        blender_version  = addonProps.blenderVersion
-        ticket_type      = addonProps.ticketTypeSelection
-        operating_system = addonProps.operatingSystem
-        avatar_name      = addonProps.user if addonProps.user else ""
-        title            = ""
-
-        import urllib
-        ptmpl = "/avastar/tickets/"\
-              + "?wpas_product=%s"\
-              + "&wpas_mama_version_number=%s"\
-              + "&wpas_mama_blender_version=%s"\
-              + "&wpas_mama_ticket_type=%s"\
-              + "&wpas_mama_operating_system=%s"\
-              + "&wpas_mama_avatar_name=%s"
-
- 
-        page = ptmpl % (
-               product_name, 
-               addon_version,
-               blender_version, 
-               ticket_type,
-               operating_system,
-               avatar_name,
-
-        )
-        page = urllib.parse.quote_plus('page:%s'%page)
-
-        url = ("https://support.machinimatrix.org/wp-login.php?log=%s&pwd=%s&%s" % (user, pwd, page)).replace("page%3A","page=")
-        new = 2
-
-        print("Open page [%s]" % url )
-        webbrowser.open(url,new=new)
-        return {'FINISHED'}
-
-class CheckForUpdates(bpy.types.Operator):
-    bl_idname = "avastar.check_for_updates"
-    bl_label  = "Check for Updates"
-    bl_description = "Check the Machinimatrix Website for Avastar Update s\n\nNote: The Update Tool does not work for\nDevelopment Releases and Release Candidates"
-
-    def execute(self, context):
-        addonProps = util.getAddonPreferences()
-        try:
-            import xml
-            import xmlrpc.client
-        except:
-            print("xmlrpc: i can not configure the remote call to machinimatrix.")
-            print("Sorry, we can not provide this feature on your computer")
-            addonProps.update_status = 'BROKEN'
-            return {'CANCELLED'}
-
-        ssl_context = www.install_certificates()
-        service = xmlrpc.client.ServerProxy(
-                      XMLRPC_SERVICE,
-                      context= ssl_context,
-                      verbose=True )
-
-        user            = addonProps.username
-        pwd             = addonProps.password
-
-        addon_version   = util.get_addon_version()
-        blender_version = str(get_blender_revision())
-        product         = 'Avastar'
-
-
-
-
-
-
-
-
-        dld = None
-        try:
-            dld=service.avastar.getPlugin(1,user, pwd, addon_version, blender_version, product)
-            if dld[0] in  ['UPDATE','ONLINE']:
-                addonProps.update_status = dld[0]
-                addonProps.server        = dld[1]
-                addonProps.page          = dld[2]
-                addonProps.user          = dld[3]
-                addonProps.purchase      = dld[4]
-                addonProps.version       = dld[5]
-                
-                addonProps.store_credentials()
-
-            else:
-                addonProps.server        = ''
-                addonProps.page          = ''
-                addonProps.user          = ''
-                addonProps.purchase      = ''
-                addonProps.version       = ''
-
-        except xml.parsers.expat.ExpatError as err:
-            log.error("A Parser Error occured:")
-            log.error(err)
-        except xmlrpc.client.ProtocolError as err:
-            log.error("A protocol error occurred")
-            log.error("URL: %s" % err.url)
-            log.error("HTTP/HTTPS headers: %s" % err.headers)
-            log.error("Error code: %d" % err.errcode)
-            log.error("Error message: %s" % err.errmsg)
-            dld = None
-    
-        if dld:
-            if dld[0] in ['UNKNOWN','UPTODATE','CANUPDATE', 'UPDATE', 'ONLINE']:
-                addonProps.update_status = dld[0]
-                addonProps.version       = dld[5]
-                return {'FINISHED'}
-            else:
-                addonProps.update_status = 'UNKNOWN'
-                log.error("CheckForUpdates: unknown status [",dld[0],"]")
-                return {'CANCELLED'}
-        else:
-            log.info("heck for Updates cancelled")
-            return {'CANCELLED'}
+# Removed: Machinimatrix Download/Update/Report/Check Operators
+# - DownloadUpdate
+# - CreateReport  
+# - CheckForUpdates
 
 
 ''' class PanelAvastarInfo(bpy.types.Panel):
@@ -3935,24 +3695,7 @@ def fix_avastar_data_on_load(scene):
             rig.deform_display_reset(armobj)
             rig.fix_avastar_armature(context, armobj)
 
-        if props.rig_version_check:
-            avastar_version, rig_version, rig_id, rig_type = util.get_version_info(armobj)
-            if avastar_version != rig_version and rig_id != AVASTAR_RIG_ID:
-                ctx = None
-                util.set_active_object(context, armobj)
-                for window in context.window_manager.windows:
-                    screen = window.screen
-                    for area in screen.areas:
-                        if area.type == 'VIEW_3D':
-                            ctx = util.get_context_copy(context)
-                            ctx['window']        = window
-                            ctx['screen']        = screen
-                            ctx['area']          = area
-                            ctx['active_object'] = armobj
-                            ctx['object']        = armobj
-                            break
-                if ctx:
-                    bpy.ops.avastar.update_avastar(ctx, 'INVOKE_DEFAULT')
+        # Removed: Automatic rig version check dialog
 
 
     def get_prop_safemode(ob, prop_name, default=None):
@@ -4937,9 +4680,7 @@ classes = (
     DownloadReload,
     DownloadInstall,
     DownloadReset,
-    DownloadUpdate,
-    CreateReport,
-    CheckForUpdates,
+    # Removed: DownloadUpdate, CreateReport, CheckForUpdates
     AVASTAR_MT_rig_presets_menu,
     AvastarAddPresetRig,
     AvastarUpdatePresetRig,
@@ -5051,7 +4792,10 @@ modules =  (
     skeleton,
     util,
     weights,
-    www
+    www,
+    bom,
+    animesh,
+    performance
 )
 
 

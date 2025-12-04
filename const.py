@@ -360,7 +360,7 @@ URL_MANUAL_MAPPING = {
     "BONE_PRESET" : ("bpy.ops.avastar.bone_preset_*", "help/toolshelf/workflows/presets/?"+TOOL_PARAMETER),
     "BREATHE" : ("bpy.ops.avastar.breathe_*", "help/properties-region/bone-rotation-limits/?"+TOOL_PARAMETER),
     "CHAIN" : ("bpy.ops.avastar.chain_*", "help/properties-region/ik-controls/?"+TOOL_PARAMETER),
-    "CHECK_FOR_UPDATES" : ("bpy.ops.avastar.check_for_updates", "help/toolshelf/maintenance/?"+TOOL_PARAMETER),
+    # Removed: CHECK_FOR_UPDATES (Machinimatrix integration)
     "CHECK_HIERARCHY" : ("bpy.ops.avastar.check_hierarchy", "help/toolshelf/tools/armature/check-bone-hierarchy/?"+TOOL_PARAMETER),
     "CHECK_MESH" : ("bpy.ops.avastar.check_mesh", "help/toolshelf/mesh-info/?"+TOOL_PARAMETER),
     "CLEAR_BONE_MAP" : ("bpy.ops.avastar.clear_bone_map", "help/toolshelf/animation/motion-transfer/#clear_bone_map?"+TOOL_PARAMETER),
